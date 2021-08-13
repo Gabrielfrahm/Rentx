@@ -76,7 +76,7 @@ export function CarDetails() {
       <Footer>
         <Button
           title="Agendar"
-          color="green"
+          color="blue"
         />
       </Footer>
 
