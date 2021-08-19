@@ -1,5 +1,8 @@
 import React from 'react';
 import { BackButton } from '../../components/BackButton';
+import { Button } from '../../components/Button';
+import { Calendar } from '../../components/Calendar';
+
 import { StatusBar } from 'react-native';
 import { useTheme } from 'styled-components';
 
@@ -16,7 +19,7 @@ import {
   Content,
   Footer,
 } from './styles';
-import { Button } from '../../components/Button';
+
 
 export function Scheduling() {
   const theme = useTheme();
@@ -50,7 +53,7 @@ export function Scheduling() {
 
       </Header>
       <Content>
-
+        <Calendar />
       </Content>
       <Footer>
         <Button
