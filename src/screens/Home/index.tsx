@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-
 import { StatusBar } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 
 import Logo from '../../assets/logo.svg';
+import { api } from '../../service/api';
 import { Car } from '../../components/Car';
+import { CarDTO } from '../../dtos/CarDTO';
+
+import { Loading } from '../../components/Loading';
 import {
   Container,
   Header,
@@ -16,21 +19,30 @@ import {
 } from './styles';
 
 export function Home() {
+  const [cars, setCars] = useState<CarDTO[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
-  const carData  = {
-    brand : "audi",
-    name : 'RS 5 Coupé',
-    rent : {
-      period: 'ao dia ',
-      price: 25,
-    },
-    thumbnail : 'https://cdn.picpng.com/audi/audi-face-28582.png',
-  }
 
-  function handleCarDetails(){
+  function handleCarDetails() {
     // erro for typescript but, issus open in github
     navigation.navigate('CarDetails');
   }
+
+  useEffect(() => {
+    async function fetchCars() {
+      try {
+        await api.get('/cars').then(
+          response => setCars(response.data)
+        );
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchCars();
+  }, [])
 
   return (
     <Container>
@@ -47,11 +59,14 @@ export function Home() {
           </TotalCars>
         </HeaderContent>
       </Header>
-      <CarList
-        data={[1,2,3]}
-        keyExtractor={item => String(item)}
-        renderItem={({item}) => <Car data={carData} onPress={handleCarDetails} /> }
-      />
+      {
+        isLoading ? <Loading /> :
+          <CarList
+            data={cars}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => <Car data={item} onPress={handleCarDetails} />}
+          />
+      }
     </Container>
   );
 }
