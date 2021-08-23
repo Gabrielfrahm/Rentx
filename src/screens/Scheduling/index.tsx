@@ -1,10 +1,12 @@
 import React from 'react';
+
 import { BackButton } from '../../components/BackButton';
 import { Button } from '../../components/Button';
 import { Calendar } from '../../components/Calendar';
 
 import { StatusBar } from 'react-native';
 import { useTheme } from 'styled-components';
+import { useNavigation } from '@react-navigation/native';
 
 import ArrowSVG from '../../assets/arrow.svg'
 
@@ -23,6 +25,12 @@ import {
 
 export function Scheduling() {
   const theme = useTheme();
+  const navigation = useNavigation();
+  function handleConfirm(){
+    // erro for typescript but, issus open in github
+    navigation.navigate('SchedulingDetails');
+  }
+
   return (
     <Container>
       <Header>
@@ -58,6 +66,7 @@ export function Scheduling() {
       <Footer>
         <Button
           title="Confirmar"
+          onPress={handleConfirm}
         />
       </Footer>
 

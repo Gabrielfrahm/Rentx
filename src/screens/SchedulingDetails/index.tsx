@@ -14,6 +14,8 @@ import GasolineSvg from '../../assets/gasoline.svg';
 import ExchangeSvg from '../../assets/exchange.svg';
 import PeopleSvg from '../../assets/people.svg';
 
+import { useTheme } from 'styled-components';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   Container,
@@ -40,11 +42,17 @@ import {
   RentalPriceTotal,
   Footer,
 } from './styles';
-import { useTheme } from 'styled-components';
 
 
 export function SchedulingDetails() {
   const theme = useTheme();
+
+  const navigation = useNavigation();
+  function handleConfirm(){
+    // erro for typescript but, issus open in github
+    navigation.navigate('SchedulingComplete');
+  }
+
   return (
     <Container>
       <Header>
@@ -119,8 +127,9 @@ export function SchedulingDetails() {
 
       <Footer>
         <Button
-          title="Agendar"
-          color="red"
+          title="Alugar agora"
+          color={theme.colors.success}
+          onPress={handleConfirm}
         />
       </Footer>
 

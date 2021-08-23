@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/core';
+
 import { Accessory } from '../../components/Accessory';
 import { BackButton } from '../../components/BackButton';
 import { ImageSlider } from '../../components/ImageSlider';
@@ -30,6 +32,13 @@ import {
 import { Button } from '../../components/Button';
 
 export function CarDetails() {
+  const navigation = useNavigation();
+
+  function handleConfirmRental(){
+    // erro for typescript but, issus open in github
+    navigation.navigate('Scheduling');
+  }
+
   return (
     <Container>
       <Header>
@@ -75,8 +84,9 @@ export function CarDetails() {
 
       <Footer>
         <Button
-          title="Agendar"
-          color="blue"
+          title="Escolher Período do aluguel"
+          // color="blue"
+          onPress={handleConfirmRental}
         />
       </Footer>
 

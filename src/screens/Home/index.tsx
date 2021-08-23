@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+
 import { StatusBar } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 
@@ -14,6 +16,7 @@ import {
 } from './styles';
 
 export function Home() {
+  const navigation = useNavigation();
   const carData  = {
     brand : "audi",
     name : 'RS 5 Coupé',
@@ -22,6 +25,11 @@ export function Home() {
       price: 25,
     },
     thumbnail : 'https://cdn.picpng.com/audi/audi-face-28582.png',
+  }
+
+  function handleCarDetails(){
+    // erro for typescript but, issus open in github
+    navigation.navigate('CarDetails');
   }
 
   return (
@@ -42,7 +50,7 @@ export function Home() {
       <CarList
         data={[1,2,3]}
         keyExtractor={item => String(item)}
-        renderItem={({item}) => <Car data={carData} /> }
+        renderItem={({item}) => <Car data={carData} onPress={handleCarDetails} /> }
       />
     </Container>
   );
