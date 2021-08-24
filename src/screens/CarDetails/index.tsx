@@ -28,6 +28,8 @@ import {
   Footer,
 } from './styles';
 
+
+
 interface Params {
   car: CarDTO;
 }
@@ -39,7 +41,7 @@ export function CarDetails() {
 
   function handleConfirmRental() {
     // erro for typescript but, issus open in github
-    navigation.navigate('Scheduling');
+    navigation.navigate('Scheduling', { car });
   }
 
   function handleBack() {
@@ -74,11 +76,11 @@ export function CarDetails() {
 
         <Accessories>
 
-         {
-           car.accessories.map(accessory => (
-            <Accessory key={accessory.type} name={accessory.name} icon={getAccessoryIcon(accessory.type)} />
-           ))
-         }
+          {
+            car.accessories.map(accessory => (
+              <Accessory key={accessory.type} name={accessory.name} icon={getAccessoryIcon(accessory.type)} />
+            ))
+          }
 
         </Accessories>
 
