@@ -23,9 +23,9 @@ export function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
 
-  function handleCarDetails() {
+  function handleCarDetails(car : CarDTO) {
     // erro for typescript but, issus open in github
-    navigation.navigate('CarDetails');
+    navigation.navigate('CarDetails', {car});
   }
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export function Home() {
           <CarList
             data={cars}
             keyExtractor={item => item.id}
-            renderItem={({ item }) => <Car data={item} onPress={handleCarDetails} />}
+            renderItem={({ item }) => <Car data={item} onPress={() => handleCarDetails(item)} />}
           />
       }
     </Container>
