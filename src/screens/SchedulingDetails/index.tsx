@@ -80,7 +80,12 @@ export function SchedulingDetails() {
         ...dates,
       ]
 
-      api.put(`/schedules_bycars/${car.id}`, {
+      await api.post('schedules_byuser', {
+        user_id: 1,
+        car
+      })
+
+      await api.put(`/schedules_bycars/${car.id}`, {
         id: car.id,
         unavailable_dates,
         // erro for typescript but, issus open in github
