@@ -48,15 +48,11 @@ export function Scheduling() {
   const { car } = route.params as Params;
 
   function handleConfirm() {
-    if (!rentalPeriod.startFormatted || !rentalPeriod.endFormatted) {
-      Alert.alert('Selecione o intervalo para alugar!');
-    } else {
-      // erro for typescript but, issus open in github
-      navigation.navigate('SchedulingDetails', {
-        car,
-        dates: Object.keys(marketDate),
-      });
-    }
+    // erro for typescript but, issus open in github
+    navigation.navigate('SchedulingDetails', {
+      car,
+      dates: Object.keys(marketDate),
+    });
   }
 
   function handleGoBack() {
@@ -125,6 +121,7 @@ export function Scheduling() {
         <Button
           title="Confirmar"
           onPress={handleConfirm}
+          enabled={!!rentalPeriod.startFormatted}
         />
       </Footer>
 

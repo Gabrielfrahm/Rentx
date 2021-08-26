@@ -55,6 +55,7 @@ interface RentalPeriod {
 }
 
 export function SchedulingDetails() {
+  const [isLoading, setIsLoading] = useState(false);
   const [rentalPeriod, setRentalPeriod] = useState<RentalPeriod>({} as RentalPeriod)
 
   const theme = useTheme();
@@ -67,7 +68,7 @@ export function SchedulingDetails() {
 
 
   async function handleConfirm() {
-
+    setIsLoading(true);
     const schedulesByCar = await api.get(`/schedules_bycars/${car.id}`);
 
     const verifyDate = await schedulesByCar.data.unavailable_dates.filter((item: string) => {
@@ -82,117 +83,123 @@ export function SchedulingDetails() {
 
       await api.post('schedules_byuser', {
         user_id: 1,
-        car
+        car,
+        startDate: format(getPlatFormDate(new Date(dates[0])), 'dd/MM/yyyy'),
+        endDate: format(getPlatFormDate(new Date(dates[dates.length - 1])), 'dd/MM/yyyy')
       })
 
       await api.put(`/schedules_bycars/${car.id}`, {
         id: car.id,
         unavailable_dates,
-        // erro for typescript but, issus open in github
       })
+        // erro for typescript but, issus open in github
         .then(response => navigation.navigate('SchedulingComplete'))
         .catch(_ => {
           Alert.alert('Não foi possível realizar o agendamento!')
+          setIsLoading(false);
         })
     } else {
       const day = await verifyDate.map((item: string) => {
         return `${format(getPlatFormDate(new Date(item)), 'dd/MM/yyyy')}`
       })
-      return Alert.alert('agendamento nao foi possível na data',`${day}`);
+      setIsLoading(false);
+      return Alert.alert('agendamento nao foi possível na data', `${day}`);
     }
 
   }
 
-    function handleGoBack() {
-      navigation.goBack();
-    }
+  function handleGoBack() {
+    navigation.goBack();
+  }
 
-    useEffect(() => {
-      setRentalPeriod({
-        start: format(getPlatFormDate(new Date(dates[0])), 'dd/MM/yyyy'),
-        end: format(getPlatFormDate(new Date(dates[dates.length - 1])), 'dd/MM/yyyy'),
-      })
-    }, [])
+  useEffect(() => {
+    setRentalPeriod({
+      start: format(getPlatFormDate(new Date(dates[0])), 'dd/MM/yyyy'),
+      end: format(getPlatFormDate(new Date(dates[dates.length - 1])), 'dd/MM/yyyy'),
+    })
+  }, [])
 
-    return (
-      <Container>
-        <Header>
-          <BackButton
-            onPress={handleGoBack}
-          />
-        </Header>
-        <CarImages>
-          <ImageSlider
-            ImageUrl={car.photos}
-          />
-        </CarImages>
+  return (
+    <Container>
+      <Header>
+        <BackButton
+          onPress={handleGoBack}
+        />
+      </Header>
+      <CarImages>
+        <ImageSlider
+          ImageUrl={car.photos}
+        />
+      </CarImages>
 
-        <Content>
-          <Details>
-            <Description>
-              <Brand>{car.brand}</Brand>
-              <Name>{car.name}</Name>
-            </Description>
+      <Content>
+        <Details>
+          <Description>
+            <Brand>{car.brand}</Brand>
+            <Name>{car.name}</Name>
+          </Description>
 
-            <Rent>
-              <Period>{car.rent.period}</Period>
-              <Price>R$ {car.rent.price}</Price>
-            </Rent>
-          </Details>
+          <Rent>
+            <Period>{car.rent.period}</Period>
+            <Price>R$ {car.rent.price}</Price>
+          </Rent>
+        </Details>
 
-          <Accessories>
-            {
-              car.accessories.map(accessory => (
-                <Accessory key={accessory.type} name={accessory.name} icon={getAccessoryIcon(accessory.type)} />
-              ))
-            }
+        <Accessories>
+          {
+            car.accessories.map(accessory => (
+              <Accessory key={accessory.type} name={accessory.name} icon={getAccessoryIcon(accessory.type)} />
+            ))
+          }
 
-          </Accessories>
+        </Accessories>
 
-          <RentalPeriod>
-            <CalendarIcon>
-              <Feather
-                name="calendar"
-                size={RFValue(24)}
-                color={theme.colors.shape}
-              />
-            </CalendarIcon>
-
-            <DateInfo>
-              <DateTitle>De</DateTitle>
-              <DateValue>{rentalPeriod.start}</DateValue>
-            </DateInfo>
-
+        <RentalPeriod>
+          <CalendarIcon>
             <Feather
-              name="chevron-right"
-              size={RFValue(10)}
-              color={theme.colors.text}
+              name="calendar"
+              size={RFValue(24)}
+              color={theme.colors.shape}
             />
+          </CalendarIcon>
 
-            <DateInfo>
-              <DateTitle>Ate</DateTitle>
-              <DateValue>{rentalPeriod.end}</DateValue>
-            </DateInfo>
+          <DateInfo>
+            <DateTitle>De</DateTitle>
+            <DateValue>{rentalPeriod.start}</DateValue>
+          </DateInfo>
 
-          </RentalPeriod>
-
-          <RentalPrice>
-            <RentalPriceLabel>Total</RentalPriceLabel>
-            <RentalPriceDetails>
-              <RentalPriceQuota>R$ {car.rent.price} x {dates.length} diárias</RentalPriceQuota>
-              <RentalPriceTotal>R$ {rentalTotal}</RentalPriceTotal>
-            </RentalPriceDetails>
-          </RentalPrice>
-        </Content>
-
-        <Footer>
-          <Button
-            title="Alugar agora"
-            color={theme.colors.success}
-            onPress={handleConfirm}
+          <Feather
+            name="chevron-right"
+            size={RFValue(10)}
+            color={theme.colors.text}
           />
-        </Footer>
 
-      </Container>
-    );
-  }
+          <DateInfo>
+            <DateTitle>Ate</DateTitle>
+            <DateValue>{rentalPeriod.end}</DateValue>
+          </DateInfo>
+
+        </RentalPeriod>
+
+        <RentalPrice>
+          <RentalPriceLabel>Total</RentalPriceLabel>
+          <RentalPriceDetails>
+            <RentalPriceQuota>R$ {car.rent.price} x {dates.length} diárias</RentalPriceQuota>
+            <RentalPriceTotal>R$ {rentalTotal}</RentalPriceTotal>
+          </RentalPriceDetails>
+        </RentalPrice>
+      </Content>
+
+      <Footer>
+        <Button
+          title="Alugar agora"
+          color={theme.colors.success}
+          onPress={handleConfirm}
+          enabled={!isLoading}
+          isLoading={isLoading}
+        />
+      </Footer>
+
+    </Container>
+  );
+}
