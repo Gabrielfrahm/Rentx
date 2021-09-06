@@ -27,12 +27,14 @@ import {
 import { BackHandler } from 'react-native';
 import { LoadingAnimation } from '../../components/LoadingAnimation';
 
+
+
 export function Home() {
 
 
   const [cars, setCars] = useState<CarDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const theme = useTheme();
 
   const positionY = useSharedValue(0);

@@ -17,7 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 export function SchedulingComplete() {
   const { width } = useWindowDimensions();
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   function handleOk(){
     // erro for typescript but, issus open in github
     navigation.navigate('Home');

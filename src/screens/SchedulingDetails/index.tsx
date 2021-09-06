@@ -62,7 +62,7 @@ export function SchedulingDetails() {
   const route = useRoute();
   const { car, dates } = route.params as Params;
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const rentalTotal = Number(dates.length * car.rent.price);
 
 
