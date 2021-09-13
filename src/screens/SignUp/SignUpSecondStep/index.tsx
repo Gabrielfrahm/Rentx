@@ -15,6 +15,8 @@ import { Bullet } from '../../../components/Bullet';
 import { PasswordInput } from '../../../components/PasswordInput';
 import { Button } from '../../../components/Button';
 
+import { api } from '../../../service/api';
+
 import {
   Container,
   Header,
@@ -57,7 +59,27 @@ export function SignUpSecondStep() {
         ),
       });
 
-      await schema.validate({password, confirmPassword})
+      await schema.validate({ password, confirmPassword });
+
+      // await api.get('/cars').then(response => console.log(response.data));
+
+      await api
+        .post('/users', {
+          name: user.name,
+          email: user.email,
+          driver_license: user.diverLicense,
+          password,
+        })
+        .then(
+          navigation.navigate('Confirmation', {
+            nextScreenRoute: 'SignIn',
+            title: 'Conta Criada!',
+            message: `Agora é só fazer login ${'\n'}e aproveitar`,
+          })
+        )
+        .catch((err) => {
+          console.log(err);
+        });
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         Alert.alert('opa', error.message);

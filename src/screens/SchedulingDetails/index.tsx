@@ -43,7 +43,6 @@ import {
   Footer,
 } from './styles';
 
-
 interface Params {
   car: CarDTO;
   dates: string[];
@@ -56,7 +55,9 @@ interface RentalPeriod {
 
 export function SchedulingDetails() {
   const [isLoading, setIsLoading] = useState(false);
-  const [rentalPeriod, setRentalPeriod] = useState<RentalPeriod>({} as RentalPeriod)
+  const [rentalPeriod, setRentalPeriod] = useState<RentalPeriod>(
+    {} as RentalPeriod
+  );
 
   const theme = useTheme();
   const route = useRoute();
@@ -65,47 +66,56 @@ export function SchedulingDetails() {
   const navigation = useNavigation<any>();
   const rentalTotal = Number(dates.length * car.rent.price);
 
-
-
   async function handleConfirm() {
     setIsLoading(true);
     const schedulesByCar = await api.get(`/schedules_bycars/${car.id}`);
 
-    const verifyDate = await schedulesByCar.data.unavailable_dates.filter((item: string) => {
-      return dates.includes(item);
-    });
+    const verifyDate = await schedulesByCar.data.unavailable_dates.filter(
+      (item: string) => {
+        return dates.includes(item);
+      }
+    );
 
     if (verifyDate.length === 0) {
       const unavailable_dates = [
         ...schedulesByCar.data.unavailable_dates,
         ...dates,
-      ]
+      ];
 
       await api.post('schedules_byuser', {
         user_id: 1,
         car,
         startDate: format(getPlatFormDate(new Date(dates[0])), 'dd/MM/yyyy'),
-        endDate: format(getPlatFormDate(new Date(dates[dates.length - 1])), 'dd/MM/yyyy')
-      })
+        endDate: format(
+          getPlatFormDate(new Date(dates[dates.length - 1])),
+          'dd/MM/yyyy'
+        ),
+      });
 
-      await api.put(`/schedules_bycars/${car.id}`, {
-        id: car.id,
-        unavailable_dates,
-      })
-        // erro for typescript but, issus open in github
-        .then(response => navigation.navigate('SchedulingComplete'))
-        .catch(_ => {
-          Alert.alert('Não foi possível realizar o agendamento!')
-          setIsLoading(false);
+      await api
+        .put(`/schedules_bycars/${car.id}`, {
+          id: car.id,
+          unavailable_dates,
         })
+        // erro for typescript but, issus open in github
+        .then((response) =>
+          navigation.navigate('Confirmation', {
+            nextScreenRoute: 'Home',
+            title: 'Carro Alugado!',
+            message: `Agora você só precisa ir${'\n'}até a concessionária da RENTX${'\n'}pegar seu automóvel`,
+          })
+        )
+        .catch((_) => {
+          Alert.alert('Não foi possível realizar o agendamento!');
+          setIsLoading(false);
+        });
     } else {
       const day = await verifyDate.map((item: string) => {
-        return `${format(getPlatFormDate(new Date(item)), 'dd/MM/yyyy')}`
-      })
+        return `${format(getPlatFormDate(new Date(item)), 'dd/MM/yyyy')}`;
+      });
       setIsLoading(false);
       return Alert.alert('agendamento nao foi possível na data', `${day}`);
     }
-
   }
 
   function handleGoBack() {
@@ -115,21 +125,20 @@ export function SchedulingDetails() {
   useEffect(() => {
     setRentalPeriod({
       start: format(getPlatFormDate(new Date(dates[0])), 'dd/MM/yyyy'),
-      end: format(getPlatFormDate(new Date(dates[dates.length - 1])), 'dd/MM/yyyy'),
-    })
-  }, [])
+      end: format(
+        getPlatFormDate(new Date(dates[dates.length - 1])),
+        'dd/MM/yyyy'
+      ),
+    });
+  }, []);
 
   return (
     <Container>
       <Header>
-        <BackButton
-          onPress={handleGoBack}
-        />
+        <BackButton onPress={handleGoBack} />
       </Header>
       <CarImages>
-        <ImageSlider
-          ImageUrl={car.photos}
-        />
+        <ImageSlider ImageUrl={car.photos} />
       </CarImages>
 
       <Content>
@@ -146,12 +155,13 @@ export function SchedulingDetails() {
         </Details>
 
         <Accessories>
-          {
-            car.accessories.map(accessory => (
-              <Accessory key={accessory.type} name={accessory.name} icon={getAccessoryIcon(accessory.type)} />
-            ))
-          }
-
+          {car.accessories.map((accessory) => (
+            <Accessory
+              key={accessory.type}
+              name={accessory.name}
+              icon={getAccessoryIcon(accessory.type)}
+            />
+          ))}
         </Accessories>
 
         <RentalPeriod>
@@ -178,13 +188,14 @@ export function SchedulingDetails() {
             <DateTitle>Ate</DateTitle>
             <DateValue>{rentalPeriod.end}</DateValue>
           </DateInfo>
-
         </RentalPeriod>
 
         <RentalPrice>
           <RentalPriceLabel>Total</RentalPriceLabel>
           <RentalPriceDetails>
-            <RentalPriceQuota>R$ {car.rent.price} x {dates.length} diárias</RentalPriceQuota>
+            <RentalPriceQuota>
+              R$ {car.rent.price} x {dates.length} diárias
+            </RentalPriceQuota>
             <RentalPriceTotal>R$ {rentalTotal}</RentalPriceTotal>
           </RentalPriceDetails>
         </RentalPrice>
@@ -199,7 +210,6 @@ export function SchedulingDetails() {
           isLoading={isLoading}
         />
       </Footer>
-
     </Container>
   );
 }
