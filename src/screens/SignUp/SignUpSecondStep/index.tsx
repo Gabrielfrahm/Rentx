@@ -62,24 +62,17 @@ export function SignUpSecondStep() {
       await schema.validate({ password, confirmPassword });
 
       // await api.get('/cars').then(response => console.log(response.data));
-
-      await api
-        .post('/users', {
-          name: user.name,
-          email: user.email,
-          driver_license: user.diverLicense,
-          password,
-        })
-        .then(
-          navigation.navigate('Confirmation', {
-            nextScreenRoute: 'SignIn',
-            title: 'Conta Criada!',
-            message: `Agora é só fazer login ${'\n'}e aproveitar`,
-          })
-        )
-        .catch((err) => {
-          console.log(err);
-        });
+      await api.post('/users', {
+        name: user.name,
+        email: user.email,
+        driver_license: user.diverLicense,
+        password: password,
+      });
+      // navigation.navigate('Confirmation', {
+      //   nextScreenRoute: 'SignIn',
+      //   title: 'Conta Criada!',
+      //   message: `Agora é só fazer login ${'\n'}e aproveitar`,
+      // })
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         Alert.alert('opa', error.message);
