@@ -11,12 +11,14 @@ import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { PasswordInput } from '../../components/PasswordInput';
 import * as Yup from 'yup';
+import { useAuth } from '../../hooks/auth';
 
 import { Container, Header, Title, SubTitle, Footer, Form } from './styles';
 
 export function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { signIn } = useAuth()
   const navigation = useNavigation<any>();
   async function handleSignIn() {
     try {
@@ -28,6 +30,7 @@ export function SignIn() {
       });
 
       await schema.validate({ email, password });
+      await signIn({email, password});
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         Alert.alert('Opa',error.message);

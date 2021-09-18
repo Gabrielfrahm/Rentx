@@ -90,12 +90,6 @@ export function Home() {
     fetchCars();
   }, []);
 
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', () => {
-      return true
-    });
-  }, [])
-
   return (
     <Container>
       <StatusBar

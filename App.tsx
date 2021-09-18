@@ -10,14 +10,13 @@ import {
   Archivo_500Medium,
   Archivo_600SemiBold,
 } from '@expo-google-fonts/archivo';
+import { AppProvider } from './src/hooks';
 import { ThemeProvider } from 'styled-components';
 
 import theme from './src/styles/theme';
 import AppLoading from 'expo-app-loading';
 
 import { Routes } from './src/routes';
-
-
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -28,13 +27,14 @@ export default function App() {
     Archivo_600SemiBold,
   });
   if (!fontsLoaded) {
-    return <AppLoading />
+    return <AppLoading />;
   }
 
   return (
     <ThemeProvider theme={theme}>
-      <Routes />
+      <AppProvider>
+        <Routes />
+      </AppProvider>
     </ThemeProvider>
   );
 }
-
